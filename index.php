@@ -253,7 +253,7 @@ class HillCipher_Enkripsi
         return HillCipher_Enkripsi::$totalHasilEnkrip;
     }
     public static function main(&$args)
-    {
+    {   
         $text = "MALANG";
         $kunci = array(
             array(
@@ -272,9 +272,9 @@ HillCipher_Enkripsi::main($argv);
 
 ?>
 <div class="contact-us">
-  <form action="#" method="post">
-    <input placeholder="Masukan Kalimat Anda"  type="text"  />
-    <button type="button" >Mulai Enkripsi</button>
+  <form action="" method="post">
+    <input placeholder="Masukan Kalimat Anda"  type="text" value= <?php $text ?> >
+    <button type="submit" name="button" formmethod="post" >Mulai Enkripsi</button>
   </form>
 </div>
 
