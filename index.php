@@ -267,9 +267,6 @@ class HillCipher_Enkripsi
 }
 HillCipher_Enkripsi::main($argv);
 
-
-
-
 ?>
 <div class="contact-us">
   <form action="" method="post">
