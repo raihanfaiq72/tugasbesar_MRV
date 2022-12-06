@@ -273,7 +273,7 @@ HillCipher_Enkripsi::main($argv);
 ?>
 <div class="contact-us">
   <form action="" method="post">
-    <input placeholder="Masukan Kalimat Anda"  type="text" value= <?php $text ?> >
+    <input placeholder="lebokan sak karepmu"  type="text" value= <?php $text ?> >
     <button type="submit" name="button" formmethod="post" >Mulai Enkripsi</button>
   </form>
 </div>
