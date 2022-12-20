@@ -24,7 +24,7 @@ void getMatriks() {
     int k=0;
     string key;
 
-    cout << "Masukan matriks kunci 3x3 (Harus bisa invers):\n";
+    cout << "Masukan matriks kunci (9 Huruf):\n";
     cin >> key;
 
     cout << "\nMatriks dari [" << key << "] adalah = " << endl;
