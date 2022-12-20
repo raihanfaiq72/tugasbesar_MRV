@@ -87,7 +87,7 @@ void enkripsi() {
 
 void dekripsi() {
     int i, j, k;
-    float hasil;
+
     inverse();
 
     cout << "\nInverse matriks kunci dikali dengan matriks enkripsi [" << msg << "] = " << endl;
