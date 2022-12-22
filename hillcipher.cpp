@@ -22,11 +22,9 @@ int main() {
 void getMatriks() {
     int i, j;
     int k=0;
-    string key;
+    string key = "udinusmrv";
 
-    cout << "Masukan matriks kunci (9 Huruf):\n";
-    cin >> key;
-
+    cout << "Matriks kunci = " << key;
     cout << "\nMatriks dari [" << key << "] adalah = " << endl;
     for (i = 0; i < 3; i++){
         for (j = 0; j < 3; j++) {
