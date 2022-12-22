@@ -117,11 +117,6 @@ void dekripsi() {
         cout << decrypt[i][0] << endl;
     }
 
-    cout << "\nHasil perkalian matriks inverse dengan matriks enkripsi [" << msg << "] dimodulo 26 = " << endl;
-    for (i = 0; i < 3; i++){
-        cout << fmod(decrypt[i][0], 26) << endl;
-    }
-
     cout << "\nHasil dekripsi: ";
     for (i = 0; i < 3; i++){
         cout << (char)(fmod(decrypt[i][0], 26) + 97);
@@ -157,7 +152,6 @@ void inverse() {
             b[i][j] = b[i][j] / c[i][i];
         }
     }
-
 
     cout << "\nInverse matriks kunci:\n";
     for (i = 0; i < 3; i++) {
