@@ -50,12 +50,7 @@ void getMatriks() {
 void enkripsi() {
     int i, j, k;
 
-    cout << "Matrik [" << msg << "] dikali dengan matriks kunci = "<< endl;
-    for (i = 0; i < 3; i++){
-        cout << mes[i][0] << endl;
-    }
-
-    cout << "*" << endl;
+    cout << "Matrik kunci dikali dengan matriks [" << msg << "]"<< endl;
 
     for (i = 0; i < 3; i++){
         for (j = 0; j < 1; j++){
@@ -65,6 +60,12 @@ void enkripsi() {
             }
             cout << endl;
         }
+    }
+
+    cout << "*" << endl;
+
+    for (i = 0; i < 3; i++){
+        cout << mes[i][0] << endl;
     }
 
     cout << "\nHasil perkalian matriks [" << msg << "] dengan matriks kunci = " << endl;
@@ -161,7 +162,7 @@ void inverse() {
     cout << "\nInverse matriks kunci:\n";
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++){
-            cout << b[i][j] << " ";
+            cout << setprecision(3) << b[i][j] << " ";
         }
     cout << endl;
     }
