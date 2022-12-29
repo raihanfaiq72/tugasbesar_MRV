@@ -26,7 +26,7 @@ class HillCipher_Enkripsi
     // proses perhitungan
     public function hitungEnkripsi($text, &$kunci)
     {
-        echo "Hitungan Deskripsi" . "\n";
+        echo "HITUNGAN DEKRIPSI" . "\n" . "===========" . "\n";
         echo "Plaintext : " . $text,"\n";
         // String hasilSpasi = hilangkanSpasi(text);
         $this->hitungJumlahHuruf($text);
@@ -155,7 +155,7 @@ class HillCipher_Enkripsi
     static function AngkaKeAbjad(&$hasilHitungKunci)
     {
         $hasilEnkripsi = "";
-        echo "========== HASIL ENKRIPSI ===========","\n";
+        echo "========== HASIL DEKRIPSI ===========","\n";
         HillCipher_Enkripsi::$totalHasilEnkrip = "";
         for ($i = 0; $i < count($hasilHitungKunci); $i++)
         {
