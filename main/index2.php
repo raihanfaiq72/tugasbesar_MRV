@@ -1,223 +1,195 @@
-<?php
 
-class HillCipherExample
+<?php
+class HillCipher_Enkripsi
 {
-    function __construct(){
-    }
-    public static function HillCipherExample()
+    function __construct()
     {
-        $local_this = new HillCipherExample();
+        // kosongan
+    }
+    public static function HillCipher_Enkripsi()
+    {
+        $local_this = new HillCipher_Enkripsi();
         return $local_this;
     }
-    // method to accept key matrix
-    private static function getKeyMatrix()
+    public static $abjad = array(
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"
+    );
+    public static $angka = array(
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
+    );
+    public static $modulo = 26;
+    public static $teks2karakter;
+    public static $hasilKonversi;
+    public static $hasilHitungKunci;
+    public static $totalHasilEnkrip = "";
+
+    // proses perhitungan
+    public function hitungEnkripsi($text, &$kunci)
     {
-        $sc = "Inputs";
-        echo "Enter key matrix:","\n";
-        $key = readline();
-        // int len = key.length();  
-        $sq = sqrt(strlen($key));
-        if ($sq != (int)$sq)
+        echo "Hitungan Deskripsi" . "\n";
+        echo "Plaintext : " . $text,"\n";
+        // String hasilSpasi = hilangkanSpasi(text);
+        $this->hitungJumlahHuruf($text);
+        HillCipher_Enkripsi::pisahkanTeks($text);
+        HillCipher_Enkripsi::AbjadKeAngka(HillCipher_Enkripsi::$teks2karakter);
+        HillCipher_Enkripsi::perhitunganKunci(HillCipher_Enkripsi::$hasilKonversi, $kunci);
+        HillCipher_Enkripsi::AngkaKeAbjad(HillCipher_Enkripsi::$hasilHitungKunci);
+        return HillCipher_Enkripsi::$totalHasilEnkrip;
+    }
+
+    static function hilangkanSpasi($text)
+    {
+        $hasil = $text.replaceAll("\\s+","");
+        return $hasil;
+    }
+
+    public function hitungJumlahHuruf($text)
+    {
+        $jumlahHuruf = strlen($text);
+        echo "Jumlah huruf : " . strval($jumlahHuruf),"\n";
+        return $jumlahHuruf;
+    }
+
+    static function pisahkanTeks($text)
+    {
+        echo "========== MEMBAGI TIAP 2 HURUF  ===========","\n";
+        $teksnya = $text;
+        if (strlen($teksnya) % 2 == 0)
         {
-            echo "Cannot Form a square matrix","\n";
+            $teksnya = $text;
         }
-        $len = (int)$sq;
-        $keyMatrix = array_fill(0,$len,array_fill(0,$len,0));
-        $k = 0;
-        for ($i = 0; $i < $len; $i++)
+        else 
         {
-            for ($j = 0; $j < $len; $j++)
+            $teksnya = $text . ".";
+        }
+        assert(strlen($teksnya) % 2 == 0);
+        HillCipher_Enkripsi::$teks2karakter = array_fill(0,(int)(strlen($teksnya) / 2),NULL);
+        for ($index = 0; $index < count(HillCipher_Enkripsi::$teks2karakter); $index++)
+        {
+            HillCipher_Enkripsi::$teks2karakter[$index] = substr($teksnya,$index * 2,$index * 2 + 2 - $index * 2);
+            echo HillCipher_Enkripsi::$teks2karakter[$index],"\n";
+        }
+        return $teksnya;
+    }
+
+    static function AbjadKeAngka(&$text)
+    {
+        HillCipher_Enkripsi::$hasilKonversi = array_fill(0,count($text),array_fill(0,2,NULL));
+        echo "========== TRANSFORMASI HURUF KE ANGKA  ===========","\n";
+        for ($i = 0; $i < count($text); $i++)
+        {
+            $char1 = substr($text[$i],0,1 - 0);
+            $char2 = substr($text[$i],1);
+            for ($j = 0; $j < count(HillCipher_Enkripsi::$abjad); $j++)
             {
-                $keyMatrix[$i][$j] = ((int)$key[$k]) - 97;
-                $k++;
+                if ((strcmp($char1,HillCipher_Enkripsi::$abjad[$j])==0))
+                {
+                    $char1 = strval(HillCipher_Enkripsi::$angka[$j]);
+                }
+                if ((strcmp($char2,HillCipher_Enkripsi::$abjad[$j])==0))
+                {
+                    $char2 = strval(HillCipher_Enkripsi::$angka[$j]);
+                }
+            }
+            if (HillCipher_Enkripsi::$hasilKonversi[$i][0] == NULL)
+            {
+                HillCipher_Enkripsi::$hasilKonversi[$i][0] = $char1;
+                if (HillCipher_Enkripsi::$hasilKonversi[$i][1] == NULL)
+                {
+                    HillCipher_Enkripsi::$hasilKonversi[$i][1] = $char2;
+                }
             }
         }
-        return $keyMatrix;
-    }
-    // Below method checks whether the key matrix is valid (det=0)
-    private static function isValidMatrix(&$keyMatrix)
-    {
-        $det = $keyMatrix[0][0] * $keyMatrix[1][1] - $keyMatrix[0][1] * $keyMatrix[1][0];
-        // If det=0, throw exception and terminate
-        if ($det == 0)
+        for ($n = 0; $n < count(HillCipher_Enkripsi::$hasilKonversi); $n++)
         {
-            throw new Exception("Det equals to zero, invalid key matrix!");
-        }
-    }
-    // This method checks if the reverse key matrix is valid (matrix mod26 = (1,0,0,1)
-    private static function isValidReverseMatrix(&$keyMatrix, &$reverseMatrix)
-    {
-        $product = array_fill(0,2,array_fill(0,2,0));
-        // Find the product matrix of key matrix times reverse key matrix  
-        $product[0][0] = ($keyMatrix[0][0] * $reverseMatrix[0][0] + $keyMatrix[0][1] * $reverseMatrix[1][0]) % 26;
-        $product[0][1] = ($keyMatrix[0][0] * $reverseMatrix[0][1] + $keyMatrix[0][1] * $reverseMatrix[1][1]) % 26;
-        $product[1][0] = ($keyMatrix[1][0] * $reverseMatrix[0][0] + $keyMatrix[1][1] * $reverseMatrix[1][0]) % 26;
-        $product[1][1] = ($keyMatrix[1][0] * $reverseMatrix[0][1] + $keyMatrix[1][1] * $reverseMatrix[1][1]) % 26;
-        // Check if a=1 and b=0 and c=0 and d=1
-        // If not, throw exception and terminate
-        if ($product[0][0] != 1 || $product[0][1] != 0 || $product[1][0] != 0 || $product[1][1] != 1)
-        {
-            throw new Exception("Invalid reverse matrix found!");
-        }
-    }
-    // This method calculates the reverse key matrix
-    private static function reverseMatrix(&$keyMatrix)
-    {
-        $detmod26 = ($keyMatrix[0][0] * $keyMatrix[1][1] - $keyMatrix[0][1] * $keyMatrix[1][0]) % 26;
-        // Calc det  
-        $factor;
-        $reverseMatrix = array_fill(0,2,array_fill(0,2,0));
-        // Find the factor for which is true that
-        // factor*det = 1 mod 26
-        for ($factor = 1; $factor < 26; $factor++)
-        {
-            if (($detmod26 * $factor) % 26 == 1)
+            for ($p = 0; $p < count(HillCipher_Enkripsi::$hasilKonversi[0]); $p++)
             {
-                break;
+                echo HillCipher_Enkripsi::$hasilKonversi[$n][$p] . " ";
+            }
+            echo "","\n";
+        }
+        return HillCipher_Enkripsi::$hasilKonversi;
+    }
+
+    static function perhitunganKunci(&$angka, &$kunci)
+    {
+        $kunciK0B0 = $kunci[0][0];
+        $kunciK0B1 = $kunci[0][1];
+        $kunciK1B0 = $kunci[1][0];
+        $kunciK1B1 = $kunci[1][1];
+        HillCipher_Enkripsi::$hasilHitungKunci = array_fill(0,count($angka),array_fill(0,2,NULL));
+        // int hasil = (kunci[0][0]*plain[0]) + (kunci[0][1]*plain[1]) ;
+        // int hasil1 = (kunci[1][0]*plain[0]) + (kunci[1][1]*plain[1]) ;
+        echo "========== HASIL PERKALIAN KUNCI ===========","\n";
+        for ($n = 0; $n < count($angka); $n++)
+        {
+            $konvert = intval($angka[$n][0]);
+            $konvert1 = intval($angka[$n][1]);
+            $hasil = ($kunciK0B0 * $konvert) + ($kunciK0B1 * $konvert1);
+            $hasil1 = ($kunciK1B0 * $konvert) + ($kunciK1B1 * $konvert1);
+            echo strval($hasil) . " " . strval($hasil1),"\n";
+            $hasil = $hasil % HillCipher_Enkripsi::$modulo;
+            $hasil1 = $hasil1 % HillCipher_Enkripsi::$modulo;
+            //   System.out.println(hasil + " " + hasil1);
+            if (HillCipher_Enkripsi::$hasilHitungKunci[$n][0] == NULL)
+            {
+                HillCipher_Enkripsi::$hasilHitungKunci[$n][0] = strval($hasil);
+                if (HillCipher_Enkripsi::$hasilHitungKunci[$n][1] == NULL)
+                {
+                    HillCipher_Enkripsi::$hasilHitungKunci[$n][1] = strval($hasil1);
+                }
             }
         }
-        // Calculate the reverse key matrix elements using the factor found  
-        $reverseMatrix[0][0] = $keyMatrix[1][1] * $factor % 26;
-        $reverseMatrix[0][1] = (26 - $keyMatrix[0][1]) * $factor % 26;
-        $reverseMatrix[1][0] = (26 - $keyMatrix[1][0]) * $factor % 26;
-        $reverseMatrix[1][1] = $keyMatrix[0][0] * $factor % 26;
-        return $reverseMatrix;
-    }
-    // This method echoes the result of encrypt/decrypt
-    private static function echoResult($label, $adder, $phrase)
-    {
-        $i;
-        echo $label;
-        // Loop for each pair
-        for ($i = 0; $i < count($phrase);
-        $i += 2)
+        echo "========== HASIL MODULO 26 ===========","\n";
+        for ($i = 0; $i < count(HillCipher_Enkripsi::$hasilHitungKunci); $i++)
         {
-            print_r(Character.toChars($phrase[$i] + (64 + $adder)));
-            print_r(Character.toChars($phrase[$i + 1] + (64 + $adder)));
-            if ($i + 2 < count($phrase))
+            for ($j = 0; $j < count(HillCipher_Enkripsi::$hasilHitungKunci[0]); $j++)
             {
-                echo "-";
+                echo HillCipher_Enkripsi::$hasilHitungKunci[$i][$j] . " ";
+            }
+            echo "","\n";
+        }
+        return HillCipher_Enkripsi::$hasilHitungKunci;
+    }
+
+    static function AngkaKeAbjad(&$hasilHitungKunci)
+    {
+        $hasilEnkripsi = "";
+        echo "========== HASIL ENKRIPSI ===========","\n";
+        HillCipher_Enkripsi::$totalHasilEnkrip = "";
+        for ($i = 0; $i < count($hasilHitungKunci); $i++)
+        {
+            for ($j = 0; $j < count($hasilHitungKunci[0]); $j++)
+            {
+                // System.out.print(hasilHitungKunci[i][j]+" ");
+                for ($k = 0; $k < count(HillCipher_Enkripsi::$angka); $k++)
+                {
+                    if ((strcmp($hasilHitungKunci[$i][$j],strval(HillCipher_Enkripsi::$angka[$k]))==0))
+                    {
+                        $hasilEnkripsi = HillCipher_Enkripsi::$abjad[$k];
+                        HillCipher_Enkripsi::$totalHasilEnkrip = HillCipher_Enkripsi::$totalHasilEnkrip . $hasilEnkripsi;
+                    }
+                }
             }
         }
-        print("\n");
+        echo HillCipher_Enkripsi::$totalHasilEnkrip,"\n";
+        return HillCipher_Enkripsi::$totalHasilEnkrip;
     }
-    // This method makes the actual encryption
-    public static function encrypt($phrase, $alphaZero)
-    {
-        $i;
-        $adder = $alphaZero ? 1 : 0;
-        // For calclulations depending on the alphabet  
-        $keyMatrix;
-        $phraseToNum = array();
-        $phraseEncoded = array();
-        // Delete all non-english characters, and convert phrase to upper case  
-        $phrase = strtoupper($phrase.replaceAll("[^a-zA-Z]",""));
-        // If phrase length is not an even number, add "Q" to make it even
-        if (strlen($phrase) % 2 == 1)
-        {
-            $phrase += "Q";
-        }
-        // Get the 2x2 key matrix from sc  
-        $keyMatrix = HillCipherExample::getKeyMatrix();
-        // Check if the matrix is valid (det != 0)  
-        HillCipherExample::isValidMatrix($keyMatrix);
-        // Convert characters to numbers according to their
-        // place in ASCII table minus 64 positions (A=65 in ASCII table)
-        // If we use A=0 alphabet, subtract one more (adder)
-        for ($i = 0; $i < strlen($phrase); $i++)
-        {
-            array_push($phraseToNum,ord($phrase[$i]) - (64 + $adder));
-        }
-        // Find the product per pair of the phrase with the key matrix modulo 26
-        // If we use A=1 alphabet and result is 0, replace it with 26 (Z)
-        for ($i = 0; $i < count($phraseToNum);
-        $i += 2)
-        {
-            $x = ($keyMatrix[0][0] * $phraseToNum[$i] + $keyMatrix[0][1] * $phraseToNum[$i + 1]) % 26;
-            $y = ($keyMatrix[1][0] * $phraseToNum[$i] + $keyMatrix[1][1] * $phraseToNum[$i + 1]) % 26;
-            array_push($phraseEncoded,$alphaZero ? $x : ($x == 0 ? 26 : $x));
-            array_push($phraseEncoded,$alphaZero ? $y : ($y == 0 ? 26 : $y));
-        }
-        // Print the result  
-        HillCipherExample::echoResult("Encoded phrase: ", $adder, $phraseEncoded);
-    }
-    // This method makes the actual decryption
-    public static function decrypt($phrase, $alphaZero)
-    {
-        $i;
-        $adder = $alphaZero ? 1 : 0;
-        $keyMatrix;
-        $revKeyMatrix;
-        $phraseToNum = array();
-        $phraseDecoded = array();
-        // Delete all non-english characters, and convert phrase to upper case  
-        $phrase = strtoupper($phrase.replaceAll("[^a-zA-Z]",""));
-        // Get the 2x2 key matrix from sc  
-        $keyMatrix = HillCipherExample::getKeyMatrix();
-        // Check if the matrix is valid (det != 0)  
-        HillCipherExample::isValidMatrix($keyMatrix);
-        // Convert numbers to characters according to their
-        // place in ASCII table minus 64 positions (A=65 in ASCII table)
-        // If we use A=0 alphabet, subtract one more (adder)
-        for ($i = 0; $i < strlen($phrase); $i++)
-        {
-            array_push($phraseToNum,ord($phrase[$i]) - (64 + $adder));
-        }
-        // Find the reverse key matrix  
-        $revKeyMatrix = HillCipherExample::reverseMatrix($keyMatrix);
-        // Check if the reverse key matrix is valid (product = 1,0,0,1)  
-        HillCipherExample::isValidReverseMatrix($keyMatrix, $revKeyMatrix);
-        // Find the product per pair of the phrase with the reverse key matrix modulo 26
-        for ($i = 0; $i < count($phraseToNum);
-        $i += 2)
-        {
-            array_push($phraseDecoded,($revKeyMatrix[0][0] * $phraseToNum[$i] + $revKeyMatrix[0][1] * $phraseToNum[$i + 1]) % 26);
-            array_push($phraseDecoded,($revKeyMatrix[1][0] * $phraseToNum[$i] + $revKeyMatrix[1][1] * $phraseToNum[$i + 1]) % 26);
-        }
-        // Print the result  
-        HillCipherExample::echoResult("Decoded phrase: ", $adder, $phraseDecoded);
-    }
-    // main method
+
+
     public static function main(&$args)
-    {
-        $opt;
-        $phrase;
-        $p;
-        $sc = "Inputs";
-        echo "Hill Cipher Implementation (2x2)","\n";
-        echo "-------------------------","\n";
-        echo "1. Encrypt text (A=0,B=1,...Z=25)","\n";
-        echo "2. Decrypt text (A=0,B=1,...Z=25)","\n";
-        echo "3. Encrypt text (A=1,B=2,...Z=26)","\n";
-        echo "4. Decrypt text (A=1,B=2,...Z=26)","\n";
-        print("\n");
-        echo "Type any other character to exit","\n";
-        print("\n");
-        echo "Select your choice: ";
-        $opt = readline();
-        switch ($opt) {
-            case "1":
-                echo "Enter phrase to encrypt: ";
-                $phrase = readline();
-                HillCipherExample::encrypt($phrase, true);
-                break;
-            case "2":
-                echo "Enter phrase to decrypt: ";
-                $phrase = readline();
-                HillCipherExample::decrypt($phrase, true);
-                break;
-            case "3":
-                echo "Enter phrase to encrypt: ";
-                $phrase = readline();
-                HillCipherExample::encrypt($phrase, false);
-                break;
-            case "4":
-                echo "Enter phrase to decrypt: ";
-                $phrase = readline();
-                HillCipherExample::decrypt($phrase, false);
-                break;
-        }
+    {   
+        $text = "ASSALAAM";
+        $kunci = array(
+            array(
+                5, 6
+            ), array(
+                2, 3
+            )
+        );
+        HillCipher_Enkripsi::HillCipher_Enkripsi()->hitungEnkripsi($text, $kunci);
     }
 }
-HillCipherExample::main($argv);
+HillCipher_Enkripsi::main($argv);
+
 ?>
