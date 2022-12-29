@@ -1,13 +1,10 @@
 
-<!-- method php -->
 <?php
-
-// *
-// *
-// * @author CHARIS
 class HillCipher_Enkripsi
 {
-    function __construct(){
+    function __construct()
+    {
+        // kosongan
     }
     public static function HillCipher_Enkripsi()
     {
@@ -193,13 +190,5 @@ class HillCipher_Enkripsi
     }
 }
 HillCipher_Enkripsi::main($argv);
-
-class HillCipher_Deskripsi
-{
-    public function coba()
-    {
-        echo "ini coba";
-    }
-}
 
 ?>
